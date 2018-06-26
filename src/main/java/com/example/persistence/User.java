@@ -1,6 +1,11 @@
-package com.example.demo;
+package com.example.persistence;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "users")
 public class User {
+    @Id
     private long id;
     private String name;
     private int age;
@@ -47,6 +52,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "Name: " + getName() + " Age: " + getAge() + " Location: " + getLocation();
+        return "ID: " + getId() + " Name: " + getName() + " Age: " + getAge() + " Location: " + getLocation();
     }
 }

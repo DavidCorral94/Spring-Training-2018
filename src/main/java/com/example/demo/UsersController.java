@@ -19,16 +19,64 @@ public class UsersController {
     /*@RequestMapping(value = basePath, method = RequestMethod.GET)
     @ResponseBody*/
     @GetMapping(basePath)
-    public ResponseEntity<?> users() {
+    public ResponseEntity<?> getUsers() {
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping(basePath + "/{id}")
+    public ResponseEntity<?> getUser(@PathVariable long id) {
+        User user = null;
+        int i;
+        for (i = 0; i < users.size(); i++) {
+            User u = users.get(i);
+            if (u.getId() == id) {
+                user = u;
+                break;
+            }
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping(basePath)
     public ResponseEntity<?> newUser(@RequestParam("name") String name, @RequestParam("age") int age,
                                      @RequestParam("location") String location) {
-        User user = new User(ids.getAndIncrement(), name, age, location);
-        users.add(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        User u = new User(ids.getAndIncrement(), name, age, location);
+        users.add(u);
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
+    @PutMapping(basePath + "/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable long id, @RequestParam("name") String name,
+                                        @RequestParam("age") int age, @RequestParam("location") String location) {
+        User user = null;
+        int i;
+        for (i = 0; i < users.size(); i++) {
+            User u = users.get(i);
+            if (u.getId() == id) {
+                user = u;
+                break;
+            }
+        }
+
+        if (user != null) {
+            user.setName(name);
+            user.setAge(age);
+            user.setLocation(location);
+            users.set(i, user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("There is no User with that ID", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping(basePath + "/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable long id) {
+        int i;
+        for (i = 0; i < users.size(); i++) {
+            if (users.get(i).getId() == id)
+                break;
+        }
+        users.remove(i);
+        return new ResponseEntity<>("User deleted", HttpStatus.OK);
+    }
 }
